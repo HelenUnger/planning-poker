@@ -16,9 +16,6 @@ function appendMessage(message) {
 }
 
 function nicknameShare(data){
-    if (data.usersList.includes(data.user.name)) {
-        console.log('already used');
-    }
     console.log("user", data.user);
     console.log("usersList", data.usersList);
     vm.notifications.push(data.user.name + " has connected!");

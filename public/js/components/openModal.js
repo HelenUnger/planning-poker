@@ -21,7 +21,7 @@ export default {
                             <label for="name">Name:</label>
                             <input v-model="user.name" type="text" class="form-control" id="name" placeholder="name">
                             <div v-if="nameError" class="text-danger">
-                                Name cannot be empty.
+                                {{ nameError }}
                             </div>
                             <div class="form-group mt-3">
                                 <label for="role">Role</label>
@@ -51,7 +51,7 @@ export default {
                 status: 'active'
             },
             needCode: true,
-            nameError: false,
+            nameError: null,
             codeError: false
         };
     },
@@ -59,11 +59,18 @@ export default {
     methods: {
         changeNickname(){
             if(this.user.name != ""){
-                window.socket.emit('nicknameSet', this.user);
-                this.$parent.myUser = this.user;
-                $('#loginModal').modal('hide');
+                window.socket.emit('nicknameSet', this.user, returnVal => {
+                    console.log(returnVal);
+                    if (returnVal) {
+                        this.nameError = 'Name is already in use';
+                        return;
+                    } else {
+                        this.$parent.myUser = this.user;
+                        $('#loginModal').modal('hide');
+                    }
+                });
             }else{
-                this.nameError = true;
+                this.nameError = 'Name cannot be blank';
             }
         },
 

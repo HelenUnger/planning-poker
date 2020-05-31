@@ -34,7 +34,17 @@ io.on('connection', function(socket) {
     socket.emit('connected', {sID: `${socket.id}`} );
 
     //listen for incoming connection, send them to everyone
-    socket.on('nicknameSet', function(user) {
+    socket.on('nicknameSet', function(user, returnVal) {
+        var foundUser = usersList.find(userItem => userItem.name == user.name);
+        var i = usersList.indexOf(foundUser);
+
+        if (i != -1) {
+            returnVal(true);
+            return;
+        }
+
+        returnVal(false);
+
         let code = user.roomCode;
         socket.join(code);
         user.id = socket.id;
