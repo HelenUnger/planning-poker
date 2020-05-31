@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const io = require('socket.io')();
 
+const _ = require('lodash');
+
 // some config stuff
 const port = process.env.PORT || 3000;
 
@@ -29,6 +31,8 @@ io.attach(server, {
 });
 
 var usersList = [];
+var roomCode = null;
+var allScores = [];
 
 io.on('connection', function(socket) {
     socket.emit('connected', {sID: `${socket.id}`} );
@@ -45,22 +49,36 @@ io.on('connection', function(socket) {
 
         returnVal(false);
 
-        let code = user.roomCode;
-        socket.join(code);
+        roomCode = user.roomCode;
+        socket.join(roomCode);
+
         user.id = socket.id;
         usersList.push(user);
 
-        io.to(code).emit('nicknameShare', {user, usersList});
+        io.in(roomCode).emit('nicknameShare', {user, usersList});
     });
 
-    // listen for incoming messages, and then send them to everyone
-    socket.on('chat message', function(msg) {
-        // check the message contents
-        console.log('message', msg, 'socket', socket.id);
-
-        // send a message to every connected client
-        io.emit('chat message', { id: `${socket.id}`, message: msg });
+    // listen for incoming ready, with active players.
+    socket.on('ready', function(activePlayers) {
+        // send a activePlayers to every connected client save to local js
+        io.in(roomCode).emit('setReady', activePlayers);
     });
+
+    // listen for incoming submitted scores,
+    socket.on('submitScore', function(score) {
+        allScores.push(score);
+        // send a score to every connected client (check in their local js)
+        io.in(roomCode).emit('shareScore', allScores);
+    });
+
+    // // listen for incoming messages, and then send them to everyone
+    // socket.on('chat message', function(msg) {
+    //     // check the message contents
+    //     console.log('message', msg, 'socket', socket.id);
+
+    //     // send a message to every connected client
+    //     io.emit('chat message', { id: `${socket.id}`, message: msg });
+    // });
 
     socket.on('disconnect', (reason) => {
         var user = usersList.find(user => user.id == socket.id);
@@ -70,14 +88,7 @@ io.on('connection', function(socket) {
             return;
         }
 
-        let code = user.roomCode;
-
         usersList.splice(i, 1);
-        io.to(code).emit('userDisconnect', {user, usersList});
+        io.to(roomCode).emit('userDisconnect', {user, usersList});
     });
-
-    // //listen for user dis connect
-    // socket.on('force disconnect', function(name){
-    //     io.emit('userDisconnect', {message: name});
-    // });
 });

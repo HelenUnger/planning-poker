@@ -3,30 +3,9 @@ import openModal from './components/openModal.js';
 import userControls from './components/userControls.js';
 
 const socket = io();
+// const _ = require('lodash');
 
 window.socket = socket;
-
-function setUserId({sID}) {
-    vm.mySocketId = sID;
-}
-
-function appendMessage(message) {
-    vm.messages.push(message);
-    document.querySelector('.sound').play();
-}
-
-function nicknameShare(data){
-    console.log("user", data.user);
-    console.log("usersList", data.usersList);
-    vm.notifications.push(data.user.name + " has connected!");
-    vm.usersList = data.usersList;
-}
-
-function appendDisconnect(data){
-    console.log("append disconnect", data);
-    vm.usersList = data.usersList;
-    vm.notifications.push(data.user.name + " has disconnected!");
-}
 
 const vm = new Vue({
     components: {
@@ -44,6 +23,10 @@ const vm = new Vue({
         usersList: [],
         notifications: [],
 
+        activePlayers: [],
+
+        ready: false,
+
         msgError: false,
         nameError: false
 
@@ -53,26 +36,55 @@ const vm = new Vue({
         $('#loginModal').modal('show');
     },
 
-    methods: {
-        addEmoji(e){
-            let emoji = e.target.dataset.value;
-            this.message = this.message + emoji;
-        },
-
-        dispatchMessage() {
-            if(this.message != ""){
-            this.msgError = false;
-            // send a chat message
-            socket.emit('chat message', { content: this.message, name: this.user.name} );
-            this.message = "";
-            }else{
-                this.msgError = true;
+    computed: {
+        hasDealer() {
+            if(this.usersList.find(userItem => userItem.role == 1)) {
+                return true;
             }
+            return false;
+        }
+    },
+
+    methods: {
+        setUserId({sID}) {
+            this.mySocketId = sID;
         },
 
-        forceDisconnect(){
-            socket.emit('force disconnect', { name: this.user.name } );
-            window.location.replace('/loggedout');
+        nicknameShare(data){
+            console.log("user", data.user);
+            console.log("usersList", data.usersList);
+            this.notifications.push(data.user.name + " has connected!");
+            this.usersList = data.usersList;
+        },
+
+        setReady(activePlayers) {
+            this.activePlayers = activePlayers;
+            this.ready = true;
+            //filter users list to be only active players,
+            //compare scores to activeUsers
+            //set submitted users to submitted status, and waiting on to waiting
+            //if all there, then set show to true
+        },
+
+        shareScore(score) {
+            if (! this.ready) {
+                return;
+            }
+
+            //filter users list to be only active players,
+            //compare scores to activeUsers
+            //set submitted users to submitted status, and waiting on to waiting
+            //if all there, then set show to true
+        },
+
+        allScoresSubmitted() {
+            this.ready = false;
+        },
+
+        appendDisconnect(data){
+            console.log("append disconnect", data);
+            this.usersList = data.usersList;
+            this.notifications.push(data.user.name + " has disconnected!");
         }
 
     },
@@ -82,7 +94,8 @@ const vm = new Vue({
     },
 }).$mount("#app");
 
-socket.addEventListener('connected', setUserId);
-socket.addEventListener('chat message', appendMessage);
-socket.addEventListener('nicknameShare', nicknameShare);
-socket.addEventListener('userDisconnect', appendDisconnect);
+socket.addEventListener('connected', vm.setUserId);
+socket.addEventListener('setReady', vm.setReady);
+socket.addEventListener('shareScore', vm.shareScore);
+socket.addEventListener('nicknameShare', vm.nicknameShare);
+socket.addEventListener('userDisconnect', vm.appendDisconnect);

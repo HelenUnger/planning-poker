@@ -8,33 +8,37 @@ export default {
                 <div class="modal-body">
                     <form v-if="needCode" class="m-3">
                         <label for="name">Room Code:</label>
-                        <input v-model="user.roomCode" type="text" class="form-control" id="roomCode" placeholder="code">
+                        <input v-model="user.roomCode" type="text" class="form-control" id="roomCode">
                         <div v-if="codeError" class="text-danger">
                             {{ codeError }}
                         </div>
-                        <button class="btn btn-primary" type="submit" @click.prevent="setRoomCode">
+                        <div class="text-right">
+                        <button class="btn btn-primary mt-3" type="submit" @click.prevent="setRoomCode">
                             Next
                         </button>
+                        </div>
                     </form>
                     <form v-else class="m-3">
                         <div class="form-group">
                             <label for="name">Name:</label>
-                            <input v-model="user.name" type="text" class="form-control" id="name" placeholder="name">
+                            <input v-model="user.name" type="text" class="form-control" id="name">
                             <div v-if="nameError" class="text-danger">
                                 {{ nameError }}
                             </div>
                             <div class="form-group mt-3">
                                 <label for="role">Role</label>
-                                <select v-model="user.role" class="form-control" id="role" required>
+                                <select v-model.number="user.role" class="form-control" id="role" required>
                                 <option value="1">dealer</option>
                                 <option value="2">player</option>
                                 <option value="3">viewer</option>
                                 </select>
                             </div>
                         </div>
+                        <div class="text-right">
                         <button class="btn btn-primary" type="submit" @click.prevent="changeNickname">
                             Join
                         </button>
+                        </div>
                     </form>
                 </div>
             </div>

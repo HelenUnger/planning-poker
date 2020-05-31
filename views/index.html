@@ -13,34 +13,45 @@
 	<audio class="sound">
 		<source src="/audio/message.mp3" type="audio/mpeg">
 	</audio>
-	<main id="app">
-		<div class="header">
-			<img src="/images/logo.jpg" alt="logo">
+	<main id="app" class="ml-5 mr-5">
+		<div class="mt-3 mb-3">
+			<h1>planning poker</h1>
 		</div>
-		<div class="main-wrapper">
-		<section class="form-container">
-			<form>
-				<!-- <label for="message">Something to say?</label> -->
-				<div class="error" :class="{ 'msg-error' : msgError }"><p>The message cannot be blank!</p></div>
-				<textarea v-model="message" class="message" type="text" autocomplete="off" id="textarea" placeholder="send a message here!"></textarea>
-				<input type="submit" value="SEND" @click.prevent="dispatchMessage">
-				<button class="emoji" @click.prevent="addEmoji" data-value="😀">😀</button>
-				<button class="emoji" @click.prevent="addEmoji" data-value="😂">😂</button>
-				<button class="emoji" @click.prevent="addEmoji" data-value="😭">😭</button>
-			</form>
-			<div class="notifications">
-			<ul id="notify">
-				<li v-for="notify in notifications.slice(notifications.length-3,notifications.length)">{{notify}}</li>
-			</ul>
-			<ul id="users">
-				<li>ONLINE USERS</li>
-				<li v-for="user in usersList">{{user.name}}</li>
-			</ul>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="card screen-card">
+					<div class="card-body">
+						<div v-if="! hasDealer">
+							NO DEALER BRO
+						</div>
+						<div v-if="ready">
+							WE REAADYYY
+						</div>
+					</div>
+				</div>
 			</div>
-		</section>
+			<div class="col-md-4">
+				<div class="card user-card">
+					<div class="card-body">
+						<ul>
+							<li>ONLINE USERS</li>
+							<li v-for="user in usersList">{{user.name}}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card controls-card">
+			<div class="card-body">
+				<controls :my-user="myUser"></controls>
+			</div>
+		</div>
 
 		<modal></modal>
-		<controls></controls>
+
+		<!-- <ul>
+			<li v-for="notify in notifications.slice(notifications.length-3,notifications.length)">{{notify}}</li>
+		</ul> -->
 
 		<section class="messages">
 			<ul id="messages" v-for="message in messages">
