@@ -1,0 +1,90 @@
+.new-message { 
+    span { font-size: 1em; display: block; margin-bottom: 3px; }
+
+    animation: message 1s linear; 
+
+    width: 45%;
+    padding: 8px 12px;
+    background-color: #fff; 
+    color: #868686;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+
+    float:left;
+    clear: both;
+
+    word-break: break-word;
+    &:not(.my-message){
+        span{
+            color: #000;
+        }
+    }
+}
+
+@keyframes message {
+    0%{
+        opacity: 0;
+        margin: 0;
+    }
+    25%{
+        margin: 0 10px;
+    }
+    50% { 
+        margin: 0;
+    }
+    75% {
+        margin: 0 10px;
+    }
+    100%{
+        margin: 0;
+        opacity: 1;
+    }
+}
+
+.my-message {
+    float: right !important;
+    background-color: #2196f378;
+    color: white;
+    span{
+        color: #3f51b5;
+    }
+}
+
+.error{
+    opacity: 0;
+    width: 100%;
+    color: red;
+}
+.msg-error, .name-error{
+    opacity: 1 !important;
+}
+
+.notifications{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#notify{
+    height: min-content;
+    width: 50%;
+    overflow: hidden;
+    color: #868686;
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: #bfcfd682;
+}
+
+#users{
+    width: 50%;
+    color: #868686;
+    list-style: none;
+    padding: 5px 10px;
+    background-color: #96f99780;
+    border-radius: 10px;
+    max-height: 6rem;
+    overflow: overlay;
+    li:first-of-type{
+        color: green;
+    }
+}
+

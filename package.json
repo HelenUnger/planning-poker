@@ -1,0 +1,24 @@
+{
+  "name": "unger_h_chatapp",
+  "version": "1.0.0",
+  "description": "social media app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "watch": "sass --watch sass/main.scss:public/css/main.css --style compressed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HelenUnger/Unger_H_ChatApp.git"
+  },
+  "author": "Helen Unger",
+  "license": "ISC",
+  "homepage": "https://github.com/HelenUnger/Unger_H_ChatApp#readme",
+  "dependencies": {
+    "bootstrap": "^4.5.0",
+    "express": "^4.16.4",
+    "lodash": "^4.17.15",
+    "sass": "^1.26.5",
+    "socket.io": "^2.2.0"
+  }
+}
