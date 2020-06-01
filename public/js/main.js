@@ -87,8 +87,12 @@ const vm = new Vue({
             const filtered = nonSubmittedUsers.filter(answer => answer == false);
 
             if (filtered.length == 0) {
-                this.showScores = true;
+                window.socket.emit('showScores', {showScores: true});
             }
+        },
+
+        showAllScores(show) {
+            this.showScores = show;
         },
 
         resetGame() {
@@ -116,5 +120,6 @@ socket.addEventListener('connected', vm.setUserId);
 socket.addEventListener('setReady', vm.setReady);
 socket.addEventListener('resetGame', vm.resetGame);
 socket.addEventListener('shareScore', vm.shareScore);
+socket.addEventListener('showScores', vm.showAllScores);
 socket.addEventListener('nicknameShare', vm.nicknameShare);
 socket.addEventListener('userDisconnect', vm.appendDisconnect);

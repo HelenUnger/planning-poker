@@ -87,6 +87,12 @@ io.on('connection', function(socket) {
         io.in(roomCode).emit('shareScore', game);
     });
 
+    // listen for incoming showScores
+    socket.on('showScores', function(showScores) {
+        // send a score to every connected client (check in their local js)
+        io.in(roomCode).emit('showScores', showScores);
+    });
+
     // listen for incoming clear values.
     socket.on('resetGame', function(data) {
         game = {
