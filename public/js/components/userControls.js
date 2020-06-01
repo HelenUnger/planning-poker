@@ -120,8 +120,7 @@ export default {
                 return;
             }
 
-            console.log("submit!");
-            window.socket.emit('submitScore', {id: this.myUser.id, score: this.score});
+            window.socket.emit('submitScore', {id: this.myUser.id, name: this.myUser.name, score: this.score});
             this.submittedScore = true;
         },
 

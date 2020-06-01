@@ -33,8 +33,14 @@
 							</div>
 							<div v-else>
 								Ticket: {{ ticketId }}
-								<div v-if="! allScoresAreIn">
+								<div v-if="! showScores">
 									Waiting for votes
+								</div>
+								<div v-else>
+									<div v-for="score in allScores">
+										{{ score.name }} - {{ score.score }}
+									</div>
+									
 								</div>
 							</div>
 						</div>

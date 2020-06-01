@@ -30,7 +30,7 @@ const vm = new Vue({
 
         waitForNewGame: false,
         inProgress: false,
-        allScoresAreIn: false,
+        showScores: false,
 
         msgError: false,
         nameError: false
@@ -80,17 +80,15 @@ const vm = new Vue({
         },
 
         shareScore(game) {
-            console.log(game.allScores);
             this.allScores = game.allScores;
 
-            //filter users list to be only active players,
-            //compare scores to activeUsers
-            //set submitted users to submitted status, and waiting on to waiting
-            //if all there, then set show to true
-        },
+            const scoreUsers = this.allScores.map(score => score.id);
+            const nonSubmittedUsers = this.activePlayers.map(user => scoreUsers.includes(user.id));
+            const filtered = nonSubmittedUsers.filter(answer => answer == false);
 
-        allScoresSubmitted() {
-            this.allScoresAreIn = true;
+            if (filtered.length == 0) {
+                this.showScores = true;
+            }
         },
 
         resetGame() {
@@ -99,7 +97,6 @@ const vm = new Vue({
             this.allScores = [];
             this.inProgress = false;
             this.waitForNewGame = false;
-            console.log('reset');
             this.$refs.controls.submittedScore = false;
         },
 

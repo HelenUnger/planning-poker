@@ -33,7 +33,6 @@ export default {
         hasSubmitted() {
             var foundUser = this.allScores.find(score => score.id == this.user.id);
 
-            console.log(this.allScores);
             if (foundUser != undefined) {
                 return true;
             }
