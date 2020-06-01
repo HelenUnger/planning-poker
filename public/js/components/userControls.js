@@ -2,16 +2,26 @@ export default {
     template: `
         <div class="user-controls">
             <div v-if="myUser.role == undefined" class="text-center">Select Role</div>
-            <div v-if="myUser.role == 1">
-                <label for="ticket">Ticket:</label>
-                <input v-model="ticket" type="text" class="form-control" id="ticket" placeholder="code">
-                <button class="btn btn-primary" @click="readyUp">Ready Up</button>
+            <div v-else-if="waitForNewGame && (myUser.role == 1 || myUser.role == 2)" class="text-center">Game is in progress.. please wait</div>
+            <div v-else-if="myUser.role == 1">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input v-model="ticket" type="text" class="form-control" id="ticket" placeholder="ticket ID">
+                        <div v-if="readyError" class="text-danger">
+                            {{ readyError }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <button v-if="! inProgress" class="btn btn-primary" :disabled="! hasPlayer" @click="readyUp">Ready Up</button>
+                        <button v-else class="btn btn-primary" @click="resetGame">Reset</button>
+                    </div>
+                </div>
             </div>
-            <div v-if="myUser.role == 2" class="row">
+            <div v-else-if="myUser.role == 2" class="row">
                 <div class="col-md-8">
                     <div class="row">
                         <div class="col-md-8">
-                            <select v-model="score" class="form-control" id="score" required>
+                            <select v-model="score" :disabled="submittedScore" class="form-control" id="score" required>
                                 <option :disabled="true" value="null">Select Score</option>
                                 <option value="?">?</option>
                                 <option value="0.5">0.5</option>
@@ -32,59 +42,90 @@ export default {
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <button class="btn btn-primary" :disabled="! ready" @click="submitScore">Submit Score</button>
+                            <button class="btn btn-primary" :disabled="! inProgress || ! hasDealer || submittedScore" @click="submitScore">Submit Score</button>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 text-right">
-                    <button class="btn btn-primary" :disabled="ready" @click="setStatus">Set to Busy</button>
+                    <button class="btn btn-primary" :disabled="inProgress" @click="setStatus">Set to Busy</button>
                 </div>
             </div>
-            <div v-if="myUser.role == 3">Enjoy the show!</div>
+            <div v-else-if="myUser.role == 3">Enjoy the show!</div>
         </div>
     `,
 
-    props: ['myUser'],
+    props: ['myUser', 'inProgress'],
 
     data() {
         return {
             score: null,
             ticket: '',
             scoreError: null,
+            readyError: null,
             status: this.myUser.status,
-            ready: this.$parent.ready,
+            submittedScore: false,
         };
     },
 
     computed: {
         activePlayers() {
             return this.$parent.usersList.filter(userItem => userItem.status == 'active' && userItem.role == 2);
-        }
+        },
+
+        hasDealer() {
+            return this.$parent.hasDealer;
+        },
+
+        hasPlayer() {
+            return this.$parent.hasPlayer;
+        },
+
+        waitForNewGame() {
+            return this.$parent.waitForNewGame;
+        },
     },
 
     methods: {
         readyUp() {
-            console.log("ready");
-            window.socket.emit('ready', this.activePlayers);
+            if (this.inProgress) {
+                this.readyError = 'a game is already in progress';
+                return;
+            }
+
+            window.socket.emit('ready', {activePlayers: this.activePlayers, ticketId: this.ticket});
+        },
+
+        resetGame() {
+            if (! this.inProgress) {
+                this.readyError = 'no games in progress';
+                return;
+            }
+
+            window.socket.emit('resetGame');
         },
 
         submitScore() {
-            if (! this.ready) {
-                this.scoreError = 'the game hasn\'t started yet!'
+            if (this.submittedScore) {
+                return;
+            }
+
+            if (! this.inProgress) {
+                this.scoreError = 'the game hasn\'t started yet!';
                 return;
             }
 
             if (this.score == null) {
-                this.scoreError = 'select a score!'
+                this.scoreError = 'select a score!';
                 return;
             }
 
             console.log("submit!");
             window.socket.emit('submitScore', {id: this.myUser.id, score: this.score});
+            this.submittedScore = true;
         },
 
         setStatus() {
-            if (this.ready) {
+            if (this.inProgress) {
                 console.log("game is in progress!");
                 return;
             }

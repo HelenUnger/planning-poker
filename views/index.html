@@ -21,11 +21,22 @@
 			<div class="col-md-8">
 				<div class="card screen-card">
 					<div class="card-body">
-						<div v-if="! hasDealer">
-							NO DEALER BRO
-						</div>
-						<div v-if="ready">
-							WE REAADYYY
+						<div class="d-flex justify-content-center align-items-center">
+							<div v-if="! hasDealer">
+								NO DEALER BRO
+							</div>
+							<div v-else-if="! hasPlayer">
+								NO Players BRO
+							</div>
+							<div v-else-if="! inProgress">
+								Awaiting ready..
+							</div>
+							<div v-else>
+								Ticket: {{ ticketId }}
+								<div v-if="! allScoresAreIn">
+									Waiting for votes
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -43,7 +54,7 @@
 		</div>
 		<div class="card controls-card">
 			<div class="card-body">
-				<controls :my-user="myUser"></controls>
+				<controls ref="controls" :my-user="myUser" :in-progress="inProgress"></controls>
 			</div>
 		</div>
 

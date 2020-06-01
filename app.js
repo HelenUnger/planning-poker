@@ -32,7 +32,13 @@ io.attach(server, {
 
 var usersList = [];
 var roomCode = null;
-var allScores = [];
+
+var game = {
+    ticketId: null,
+    inProgress: false,
+    activePlayers: [],
+    allScores: [],
+}
 
 io.on('connection', function(socket) {
     socket.emit('connected', {sID: `${socket.id}`} );
@@ -55,20 +61,42 @@ io.on('connection', function(socket) {
         user.id = socket.id;
         usersList.push(user);
 
-        io.in(roomCode).emit('nicknameShare', {user, usersList});
+        io.in(roomCode).emit('nicknameShare', {user, usersList, game});
     });
 
     // listen for incoming ready, with active players.
-    socket.on('ready', function(activePlayers) {
+    socket.on('ready', function(data) {
+        game = {
+            ticketId: data.ticketId,
+            inProgress: true,
+            activePlayers: data.activePlayers,
+            allScores: [],
+        }
         // send a activePlayers to every connected client save to local js
-        io.in(roomCode).emit('setReady', activePlayers);
+        io.in(roomCode).emit('setReady', game);
     });
 
     // listen for incoming submitted scores,
     socket.on('submitScore', function(score) {
-        allScores.push(score);
+        if (! game.inProgress) {
+            return;
+        }
+
+        game.allScores.push(score);
         // send a score to every connected client (check in their local js)
-        io.in(roomCode).emit('shareScore', allScores);
+        io.in(roomCode).emit('shareScore', game);
+    });
+
+    // listen for incoming clear values.
+    socket.on('resetGame', function(data) {
+        game = {
+            ticketId: null,
+            inProgress: false,
+            activePlayers: [],
+            allScores: [],
+        }
+        // send a activePlayers to every connected client save to local js
+        io.in(roomCode).emit('resetGame');
     });
 
     // // listen for incoming messages, and then send them to everyone

@@ -64,7 +64,6 @@ export default {
         changeNickname(){
             if(this.user.name != ""){
                 window.socket.emit('nicknameSet', this.user, returnVal => {
-                    console.log(returnVal);
                     if (returnVal) {
                         this.nameError = 'Name is already in use';
                         return;
