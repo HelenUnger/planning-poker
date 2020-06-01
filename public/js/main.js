@@ -1,6 +1,7 @@
 import ChatMessage from './components/ChatMessage.js';
 import openModal from './components/openModal.js';
 import userControls from './components/userControls.js';
+import usersList from './components/usersList.js';
 
 const socket = io();
 // const _ = require('lodash');
@@ -12,6 +13,7 @@ const vm = new Vue({
         message: ChatMessage,
         modal: openModal,
         controls: userControls,
+        users: usersList,
     },
 
     data: {
@@ -22,6 +24,7 @@ const vm = new Vue({
 
         usersList: [],
         notifications: [],
+        allScores: [],
 
         activePlayers: [],
 
@@ -66,6 +69,7 @@ const vm = new Vue({
             this.inProgress = data.game.inProgress;
             this.waitForNewGame = data.game.inProgress;
             this.ticketId = data.game.ticketId;
+            this.allScores = data.game.allScores;
         },
 
         setReady(game) {
@@ -77,6 +81,7 @@ const vm = new Vue({
 
         shareScore(game) {
             console.log(game.allScores);
+            this.allScores = game.allScores;
 
             //filter users list to be only active players,
             //compare scores to activeUsers

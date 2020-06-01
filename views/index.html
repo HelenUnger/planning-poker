@@ -44,10 +44,9 @@
 			<div class="col-md-4">
 				<div class="card user-card">
 					<div class="card-body">
-						<ul>
-							<li>ONLINE USERS</li>
-							<li v-for="user in usersList">{{user.name}}</li>
-						</ul>
+						<div v-for="user in usersList">
+							<users :my-user="myUser" :in-progress="inProgress" :user="user"></users>
+						</div>
 					</div>
 				</div>
 			</div>

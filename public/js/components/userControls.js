@@ -2,7 +2,7 @@ export default {
     template: `
         <div class="user-controls">
             <div v-if="myUser.role == undefined" class="text-center">Select Role</div>
-            <div v-else-if="waitForNewGame && (myUser.role == 1 || myUser.role == 2)" class="text-center">Game is in progress.. please wait</div>
+            <div v-else-if="waitForNewGame && myUser.role == 2" class="text-center">Game is in progress.. please wait</div>
             <div v-else-if="myUser.role == 1">
                 <div class="row">
                     <div class="col-md-6">
@@ -93,6 +93,7 @@ export default {
             }
 
             window.socket.emit('ready', {activePlayers: this.activePlayers, ticketId: this.ticket});
+            this.ticket = '';
         },
 
         resetGame() {

@@ -1,6 +1,4 @@
 export default {
-    props: ['msg'],
-
     template: `
     <div class="modal fade" id="loginModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -49,6 +47,7 @@ export default {
     data() {
         return {
             user: {
+                id: null,
                 roomCode: '',
                 name: '',
                 role: 2,
@@ -68,6 +67,7 @@ export default {
                         this.nameError = 'Name is already in use';
                         return;
                     } else {
+                        this.user.id = this.$parent.mySocketId;
                         this.$parent.myUser = this.user;
                         $('#loginModal').modal('hide');
                     }
