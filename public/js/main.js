@@ -18,7 +18,10 @@ const vm = new Vue({
 
     data: {
         mySocketId: "",
-        myUser: {},
+        myUser: {
+            roomCode: '',
+        },
+
         message: "",
         messages: [],
 
@@ -63,11 +66,10 @@ const vm = new Vue({
         },
 
         nicknameShare(data){
-            this.notifications.push(data.user.name + " has connected!");
+            this.notifications.push(data.user.name + " has joined!");
             this.usersList = data.usersList;
 
             this.inProgress = data.game.inProgress;
-            this.waitForNewGame = data.game.inProgress;
             this.ticketId = data.game.ticketId;
             this.allScores = data.game.allScores;
         },
@@ -95,18 +97,28 @@ const vm = new Vue({
             this.showScores = show;
         },
 
+        updateUsersList(newUsersList) {
+            console.log(newUsersList);
+            this.usersList = newUsersList;
+        },
+
         resetGame() {
             this.ticketId = null;
             this.activePlayers = [];
             this.allScores = [];
             this.inProgress = false;
+            this.showScores = false;
             this.waitForNewGame = false;
             this.$refs.controls.submittedScore = false;
         },
 
         appendDisconnect(data){
             this.usersList = data.usersList;
-            this.notifications.push(data.user.name + " has disconnected!");
+            this.notifications.push(data.user.name + " has left!");
+
+            if (! this.hasDealer) {
+                window.socket.emit('resetGame');
+            }
         }
 
     },
@@ -121,5 +133,6 @@ socket.addEventListener('setReady', vm.setReady);
 socket.addEventListener('resetGame', vm.resetGame);
 socket.addEventListener('shareScore', vm.shareScore);
 socket.addEventListener('showScores', vm.showAllScores);
+socket.addEventListener('updateUsersList', vm.updateUsersList);
 socket.addEventListener('nicknameShare', vm.nicknameShare);
 socket.addEventListener('userDisconnect', vm.appendDisconnect);

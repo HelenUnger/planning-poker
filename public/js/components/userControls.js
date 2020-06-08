@@ -47,7 +47,7 @@ export default {
                     </div>
                 </div>
                 <div class="col-md-4 text-right">
-                    <button class="btn btn-primary" :disabled="inProgress" @click="setStatus">Set to Busy</button>
+                    <button class="btn btn-primary" :class="buttonColor" :disabled="inProgress" @click="setStatus">Set to {{ oppositeStatus }}</button>
                 </div>
             </div>
             <div v-else-if="myUser.role == 3">Enjoy the show!</div>
@@ -62,7 +62,6 @@ export default {
             ticket: '',
             scoreError: null,
             readyError: null,
-            status: this.myUser.status,
             submittedScore: false,
         };
     },
@@ -83,6 +82,14 @@ export default {
         waitForNewGame() {
             return this.$parent.waitForNewGame;
         },
+
+        oppositeStatus() {
+            return this.myUser.status == "active" ? "busy" : "active";
+        },
+
+        buttonColor() {
+            return this.myUser.status == "active" ? "btn-secondary" : "btn-success";
+        }
     },
 
     methods: {
@@ -130,10 +137,15 @@ export default {
                 return;
             }
 
-            //toggle active and busy
+            const user = {
+                ...this.myUser,
+                status: this.oppositeStatus,
+            };
 
-            console.log("status");
-            window.socket.emit('changeStatus', {id: this.myUser.id, status: this.status});
+            this.$parent.myUser = user;
+
+            //toggle active and busy
+            window.socket.emit('changeStatus', user);
         },
     },
 }

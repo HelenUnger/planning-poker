@@ -19,12 +19,16 @@ export default {
         },
 
         userColor() {
-            if (this.user.status == 'busy') {
+            if (this.user.role == 1) {
+                return 'text-dark';
+            } else if (this.user.status == 'busy') {
                 return 'text-muted';
             } else if (this.hasSubmitted()) {
                 return 'text-success';
             } else if (this.waitingSubmit()) {
                 return 'text-danger';
+            } else {
+                return 'text-primary';
             }
         },
     },

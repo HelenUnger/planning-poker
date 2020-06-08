@@ -93,6 +93,15 @@ io.on('connection', function(socket) {
         io.in(roomCode).emit('showScores', showScores);
     });
 
+    // listen for incoming statuses
+    socket.on('changeStatus', function(user) {
+        const index = usersList.findIndex(userItem => userItem.id == user.id);
+
+        usersList.splice(index, 1, user);
+        // send a score to every connected client (check in their local js)
+        io.in(roomCode).emit('updateUsersList', usersList);
+    });
+
     // listen for incoming clear values.
     socket.on('resetGame', function(data) {
         game = {
