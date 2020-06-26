@@ -1,6 +1,6 @@
-# Unger_H_ChatApp
+# WIP - Planning poker app
 
-This is a live chatting application that allows users to create a nickname and join the chat room, there are animations when messages are sent/recieved as well as an alert sound. the user can see online users and who is joining/leaving.
+This is a free, live poker planning application that allows users to join seperate rooms to plan their next sprints seperately. Users can join a room and set a nickname and role: Dealer, Player and Viewer. The Dealer is the leader of the game, and set the game status to ready once everyone has joined the room and is ready to score. The Players are able to select their score and submit when the game is ready. Everyone can see who is in the room and their statuses (busy, waiting for game to start, waiting to score, and has submitted a score) once all the scores have been submitted, they appear for everyone on the main screen, along with the average and the mode (most frequently occurring score)
 
 ## Getting Started
 
@@ -8,14 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 'npm install' to download required plugins
 'npm run watch' to watch sass and save as compressed css
-'npm run start' to get it running locally on port 3000 
-
-### What it looks like...
-what the user first sees, nickname has to be submitted and cannot be blank
-![](public/images/chatapp.png)
-
-what the chatting looks like, to leave must click on 'leave chat'
-![](public/images/emojis.png)
+'npm run start' to get it running locally on port 3000
 
 ### Prerequisites
 
@@ -25,7 +18,7 @@ any type editor can be used, browsers such as chrome/firefox are compatible
 
 ## Deployment
 
-the master branch is linked to heroku which is currently live at https://msnlivechatapp.herokuapp.com/
+the master branch is linked to heroku which is currently live at https://planning-poker.herokuapp.com/
 
 ## Built With
 
@@ -40,4 +33,4 @@ the master branch is linked to heroku which is currently live at https://msnlive
 
 ## Acknowledgments
 
-*thanks trevor for the base of the app
+*thanks trevor for introducing socket.io
