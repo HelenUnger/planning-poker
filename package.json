@@ -16,7 +16,7 @@
   "homepage": "https://github.com/HelenUnger/Unger_H_ChatApp#readme",
   "dependencies": {
     "bootstrap": "^4.5.0",
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "lodash": "^4.17.15",
     "sass": "^1.26.5",
     "socket.io": "^2.2.0"
